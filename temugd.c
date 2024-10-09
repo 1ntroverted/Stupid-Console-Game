@@ -3,54 +3,64 @@
 #include<windows.h>
 #include<conio.h>
 #include<time.h>
+#pragma warning(disable:4996)
 
-// 만들고 싶은거: slide motion (캐릭터 높이가 1칸이 되고, slide 키는 's'가 될 예정. 장애물도 추가 할거임) 
+int mainarr[25][120];
+int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
+int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0;
+char jumpkey = 'w', slidekey = 's';
 
-int mainarr[25][120], character[2][2] = { {4,4},{4,4} };
-int notouch[4][7] = { {0,0,0,2,0,0,0}, {0,0,2,2,2,0,0}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
-int i, j, height=0, updown=1, waitforstruct=0, istherestruct=0, getsu = 0, score=0, curtime;
-
-typedef struct character
+int isitgameover() // 장애물에 닿았는지 확인
 {
-	int char_x;
-	int char_y;
-} Character;
+	if (mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2)
+	{
+		return 1;
+	}
+	return 0;
+}
 
-typedef struct enemy
+void isititem() // 아이템을 먹었는지 확인
 {
-	int char_x;
-	int item;
-} enemy;
+	if (mainarr[20 - height][4] == 3 || mainarr[20 - height][3] == 3 || mainarr[19 - height][4] == 3 || mainarr[19 - height][3] == 3)
+	{
+		if(height>0)
+		{
+			score += 300;
+		}
+		else
+		{
+			score += 50;
+		}
+	}
+}
 
 void SetConsole()
 {
-	system("title Temu Geometry Dash");
+	system("title Temu Untitled Game");
 	system("mode con:cols=130 lines=35");
 	CONSOLE_CURSOR_INFO ConsoleCursor;
-	ConsoleCursor.bVisible = 1;
-	ConsoleCursor.dwSize = 1;
+	ConsoleCursor.bVisible = 0;
+	ConsoleCursor.dwSize = 0;
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorInfo(consoleHandle, &ConsoleCursor);
 }
 
 void gotoxy(int x, int y)
 {
-	HANDLE consoleHandle= GetStdHandle;
-	COORD Cur={x,y};
+	HANDLE consoleHandle = GetStdHandle;
+	COORD Cur = { x,y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
-void jump(Character mainone)
+void jump() // 점프
 {
-	if(updown == 1)
+	if (updown == 1)
 	{
 		for (i = 0; i < 2; i++)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				gotoxy(mainone.char_x + j + 5, mainone.char_y - height + i);
-				printf(" ");
-				mainarr[mainone.char_y - height + i][mainone.char_x + j] = 0;
+				mainarr[19 - height + i][2 + j] = 0;
 			}
 		}
 		height++;
@@ -58,26 +68,22 @@ void jump(Character mainone)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				gotoxy(mainone.char_x + j + 5, mainone.char_y - height + i);
-				printf("4");
-				mainarr[mainone.char_y - height + i][mainone.char_x + j] = 4;
+				mainarr[19 - height + i][2 + j] = 4;
 			}
 			printf("\n");
 		}
-		if(height >= 7)
+		if (height >= 7)
 		{
 			updown++;
 		}
 	}
-	if(updown == 2)
+	if (updown == 2)
 	{
 		for (i = 0; i < 2; i++)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				gotoxy(mainone.char_x + j + 5, mainone.char_y - height + i);
-				printf(" ");
-				mainarr[mainone.char_y - height + i][mainone.char_x + j] = 0;
+				mainarr[19 - height + i][2 + j] = 0;
 			}
 		}
 		height--;
@@ -85,93 +91,104 @@ void jump(Character mainone)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				gotoxy(mainone.char_x + j + 5, mainone.char_y - height + i);
-				printf("4");
-				mainarr[mainone.char_y - height + i][mainone.char_x + j] = 4;
+				mainarr[19 - height + i][2 + j] = 4;
 			}
 			printf("\n");
 		}
-		if(height==0)
+		if (height == 0)
 		{
-			updown--;
+			updown = 0;
 		}
 	}
 };
 
-void randomstruct(enemy structure[3])
+void slide() // 포기함
 {
-	if(waitforstruct >= 25 && rand() % 8 == 0 && getsu < 3)
+	for (i = 0; i < 2; i++)
 	{
-		for (i = 0; i < 4; i++)
-		{
-			for (j = 0; j < 7; j++)
-			{
-				if(i==0 && (j==1 || j==5) && mainarr[17][108] != 3 && rand() % 3 == 0)
-				{
-					mainarr[17+i][107+j] = 3;
-					structure[getsu].item = 107+j;
-					continue;
-				}
-				mainarr[17+i][107+j] = notouch[i][j];
-			}
-		}
-		waitforstruct=0;
-		structure[getsu].char_x = 107;
-		istherestruct=1;
-		getsu++;
+		gotoxy(2 + i, 19);
+		printf(" ");
+		mainarr[19][2 + i] = 0;
+	}
+}
+
+int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
+{
+	if (waitforstruct >= 25 && rand() % 8 == 0)
+	{
+		waitforstruct = 0;
+		istherestruct = 1;
+		return 1;
 	}
 	waitforstruct++;
+	return 0;
+}
+
+void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배열 초기화)
+{
+	height = 0;
+	updown = 1;
+	waitforstruct = 0;
+	istherestruct = 0;
+
+	// 바닥 만들기
+
+	for (i = 0; i < 25; i++)
+	{
+		for (j = 0; j < 120; j++)
+		{
+			mainarr[i][j] = 0;
+		}
+	}
+	for (i = 0; i < 120; i++)
+	{
+		mainarr[21][i] = 1;
+	}
+	for (i = 0; i < 40; i++)
+	{
+		mainarr[20][i * 3] = 3;
+	}
+	for (i = 0; i < 2; i++)
+	{
+		for (j = 0; j < 2; j++)
+		{
+			mainarr[19+ i][2 + j] = 4;
+		}
+	}
+}
+
+void generatejelly()
+{
+	if(jellywait == 3)
+	{
+		mainarr[20][118] = 3;
+		jellywait = 0;	
+	}
+	else
+	{
+		jellywait++;
+	}
 }
 
 int main()
 {
-	int retry=1;
+	int retry = 1;
 	SetConsole();
 	while (1)
 	{
+		// 게임 시작할때 정수 초기화 
 		int gameover = 0;
-		height=0;
-		updown=1;
-		waitforstruct=0;
-		istherestruct=0;
-		getsu = 0;
-		char jumpkey = 'w';
-		Character mainone;
-		enemy structure[3];
-		mainone.char_x = 2;
-		mainone.char_y = 19;
-		for(i=0;i<3;i++)
-		{
-			structure[i].item = 110;
-		}
-		structure[0].char_x = 106;
-		for (i = 0; i < 25; i++)
-		{
-			for (j = 0; j < 120; j++)
-			{
-				mainarr[i][j] = 0;
-			}
-		}
-		for (i = 0; i < 120; i++)
-		{
-			mainarr[21][i] = 1;
-		}
-		for (i = 0; i < 2; i++)
-		{
-			for (j = 0; j < 2; j++)
-			{
-				mainarr[mainone.char_y+i][mainone.char_x+j] = 4;
-			}
-		}
-		printf("Press any key to start the game.\nJumping = 'w'\nif you can't jump, chect if caps lock is on.\n\n");
+		settingthegame();
+		generatejelly();
+		printf("Press any key to start the game.\nJumping = 'w'\nif you can't jump, chect if caps lock is on.\n\n"); // 설명 
 		system("pause");
 		system("cls");
 		Sleep(100);
-		while (retry == 1)
+		while (retry == 1) // 게임을 계속 한다고 입력했을때 실행됨 
 		{
-			gotoxy(1,1);
-			printf("score: %d", score);
-			for (i = 0; i < 25; i++)
+			gotoxy(1, 1);
+			printf("score: %d", score); // score 출력 
+			for (i = 0; i < 25; i++) // mainarr 출력 
 			{
 				for (j = 0; j < 120; j++)
 				{
@@ -184,93 +201,54 @@ int main()
 				}
 				printf("\n");
 			}
-			if ((kbhit() == 1 && getch() == jumpkey) || height > 0)
+			if ((kbhit() == 1 && getch() == jumpkey) && height == 0) // 점프조건 
 			{
-				jump(mainone);
+				updown = 1;
 			}
-			randomstruct(structure);
-			if(height == 0) // 플레이어의 높이에 따라서 장애물에 닿았는지 보기 
+			jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
+			generatejelly(); // 얘 못만들겠음 
+			if (randomstruct() == 1) // 장애물 생성해야할때
 			{
-				if(structure[0].char_x <= 4 && structure[0].char_x >= -3)
+				for (i = 0; i < 9; i++) // 장애물 자리에 있는 젤리 없애기
 				{
-					gameover = 1;
-					break;
+					mainarr[20][110 + i] = 0;
+				}
+				for (i = 0; i < 4; i++) // 장애물 생성
+				{
+					for (j = 0; j < 7; j++)
+					{
+						mainarr[17 + i][111 + j] = notouch[i][j];
+					}
 				}
 			}
-			else if(height == 1) // 플레이어의 높이에 따라서 장애물에 닿았는지 보기 
-			{
-				if(structure[0].char_x <= 3 && structure[0].char_x >= -2)
-				{
-					gameover = 1;
-					break;
-				}
-			}
-			else if(height == 2) // 플레이어의 높이에 따라서 장애물에 닿았는지 보기 
-			{
-				if(structure[0].char_x <= 2 && structure[0].char_x >= -1)
-				{
-					gameover = 1;
-					break;
-				}
-			}
-			else if(height == 3) // 플레이어의 높이에 따라서 장애물에 닿았는지 보기 
-			{
-				if(structure[0].char_x <= 1 && structure[0].char_x >= 0)
-				{
-					gameover = 1;
-					break;
-				}
-			}
-			for (i = 0; i < 25; i++)
+			gameover = isitgameover(); // 장애물에 부딪혔는지 체크 
+			isititem(); // 아이템을 먹었는지 체크 
+			for (i = 0; i < 25; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 			{
 				for (j = 0; j < 119; j++)
 				{
-					if(mainarr[i][j] == 4 || mainarr[i][j+1] == 4)
+					if (mainarr[i][j] == 4 || mainarr[i][j + 1] == 4)
 					{
 						continue;
 					}
-					mainarr[i][j] = mainarr[i][j+1];
+					mainarr[i][j] = mainarr[i][j + 1];
 				}
 			}
-			for(i=0;i<2;i++) // 플레이어 칸은 유지시키기 
+			for (i = 0; i < 2; i++) // 플레이어 칸은 유지시키기 
 			{
-				mainarr[19+i-height][2] = 4;
-				mainarr[19+1-height][0] = 0;
+				mainarr[19 + i - height][2] = 4;
+				mainarr[19 + 1 - height][0] = 0;
 			}
-			if((structure[0].item == 3 || structure[0].item == 4) && (height == 2 || height == 3)) // 아이템이 플레이어한테 닿았는지 여부 
+			for (j = 0; j < 6; j++) // 플레이어를 지난 오프젝트는 삭제됨
 			{
-				score += 200; // 스코어 추가 
-				structure[0].item = 1000; // 한번 먹으면 없어짐 
+				mainarr[15 + j][1] = 0;
 			}
-			if(gameover == 1) // 게임오버면 while문 나가기 
+			if (gameover == 1) // 게임오버면 while문 나가기 
 			{
 				break;
 			}
-			if(structure[0].char_x <= -4) // 장애물이 플레이어한테서 벗어나면 없애기 
-			{
-				getsu--;
-				if(getsu == 0)
-				{
-					istherestruct = 0;
-				}
-				for(i=0;i<getsu;i++)
-				{
-					structure[i].char_x = structure[i+1].char_x;
-					structure[i].item = structure[i+1].item;
-				}
-				structure[getsu+1].char_x = 107;
-				structure[getsu+1].item = 110;
-			}
-			if(istherestruct == 1) // 장애물이 있을때 플레이어에게 가까워지게 하기 
-			{
-				for(i=0;i<getsu;i++)
-				{
-					structure[i].char_x--;
-					structure[i].item--;
-				}
-			}
 			curtime += 1;
-			if(curtime > 8)
+			if (curtime > 2) // 일정프레임마다 스코어 추가 
 			{
 				score++;
 			}
@@ -279,17 +257,17 @@ int main()
 		}
 		system("cls");
 		Sleep(300);
-		printf("Game Over\nyour score: %d\n\nretry: 'r'\nend game: esc", score);
-		while(1)
+		printf("Game Over\nyour score: %d\n\nretry: 'r'\nend game: any key except 'r'", score);
+		while (1)
 		{
-			if(getch() == 'r' || getch() == 'R')
+			if (getch() == 'r' || getch() == 'R') // retry
 			{
 				system("cls");
 				retry = 1;
-				score=0;
+				score = 0;
 				break;
 			}
-			if(getch() == 27)
+			if (getch() != 'r' && getch() != 'R') // 딴거 누르면 끝남 
 			{
 				return 0;
 			}
