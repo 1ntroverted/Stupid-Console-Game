@@ -81,12 +81,9 @@ void jump() // 점프
 	}
 	if (updown == 2 || updown == 4)
 	{
-		for (i = 0; i < 2; i++)
+		for (j = 0; j < 2; j++)
 		{
-			for (j = 0; j < 2; j++)
-			{
-				mainarr[19 - height + i][2 + j] = 0;
-			}
+			mainarr[19 - height][2 + j] = 0;
 		}
 		height--;
 		for (i = 0; i < 2; i++)
