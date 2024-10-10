@@ -7,8 +7,9 @@
 
 int mainarr[25][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
+int notouch2[6][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} };
 int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0;
-char jumpkey = 'w', slidekey = 's';
+char jumpkey = 'w', jumpkey2 = 'q';
 
 int isitgameover() // 장애물에 닿았는지 확인
 {
@@ -23,7 +24,7 @@ void isititem() // 아이템을 먹었는지 확인
 {
 	if (mainarr[20 - height][4] == 3 || mainarr[20 - height][3] == 3 || mainarr[19 - height][4] == 3 || mainarr[19 - height][3] == 3)
 	{
-		if(height>0)
+		if (height > 0)
 		{
 			score += 300;
 		}
@@ -54,16 +55,13 @@ void gotoxy(int x, int y)
 
 void jump() // 점프
 {
-	if (updown == 1)
+	if (updown == 1 || updown == 3)
 	{
-		for (i = 0; i < 2; i++)
-		{
-			for (j = 0; j < 2; j++)
-			{
-				mainarr[19 - height + i][2 + j] = 0;
-			}
-		}
 		height++;
+		for (j = 0; j < 2; j++)
+		{
+			mainarr[19 - height + 2][2 + j] = 0;
+		}
 		for (i = 0; i < 2; i++)
 		{
 			for (j = 0; j < 2; j++)
@@ -72,12 +70,16 @@ void jump() // 점프
 			}
 			printf("\n");
 		}
+		if (updown == 3 && height >= 4)
+		{
+			updown++;
+		}
 		if (height >= 7)
 		{
 			updown++;
 		}
 	}
-	if (updown == 2)
+	if (updown == 2 || updown == 4)
 	{
 		for (i = 0; i < 2; i++)
 		{
@@ -102,16 +104,6 @@ void jump() // 점프
 	}
 };
 
-void slide() // 포기함
-{
-	for (i = 0; i < 2; i++)
-	{
-		gotoxy(2 + i, 19);
-		printf(" ");
-		mainarr[19][2 + i] = 0;
-	}
-}
-
 int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 {
 	if (waitforstruct >= 25 && rand() % 8 == 0)
@@ -130,6 +122,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	updown = 1;
 	waitforstruct = 0;
 	istherestruct = 0;
+	score = 0;
 
 	// 바닥 만들기
 
@@ -152,17 +145,17 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	{
 		for (j = 0; j < 2; j++)
 		{
-			mainarr[19+ i][2 + j] = 4;
+			mainarr[19 + i][2 + j] = 4;
 		}
 	}
 }
 
 void generatejelly()
 {
-	if(jellywait == 3)
+	if (jellywait == 3)
 	{
 		mainarr[20][118] = 3;
-		jellywait = 0;	
+		jellywait = 0;
 	}
 	else
 	{
@@ -170,21 +163,54 @@ void generatejelly()
 	}
 }
 
+void generatebadstuff()
+{
+	if (rand() % 2 == 0) // 큰 장애물
+	{
+		for (i = 0; i < 9; i++) // 장애물 자리에 있는 젤리 없애기
+		{
+			mainarr[20][110 + i] = 0;
+		}
+		for (i = 0; i < 4; i++) // 장애물 생성
+		{
+			for (j = 0; j < 7; j++)
+			{
+				mainarr[17 + i][111 + j] = notouch[i][j];
+			}
+		}
+	}
+	else if (rand() % 2 == 1) // 작은 장애물
+	{
+		for (i = 0; i < 7; i++) // 장애물 자리에 있는 젤리 없애기
+		{
+			mainarr[20][111 + i] = 0;
+		}
+		for (i = 0; i < 6; i++) // 장애물 생성
+		{
+			for (j = 0; j < 5; j++)
+			{
+				mainarr[15 + i][112 + j] = notouch2[i][j];
+			}
+		}
+	}
+}
+
 int main()
 {
-	int retry = 1;
+	srand(time(NULL));
+	int random;
 	SetConsole();
 	while (1)
 	{
 		// 게임 시작할때 정수 초기화 
 		int gameover = 0;
-		settingthegame();
 		generatejelly();
-		printf("Press any key to start the game.\nJumping = 'w'\nif you can't jump, chect if caps lock is on.\n\n"); // 설명 
+		printf("Press any key to start the game.\nJumping = 'q' or 'w'\nif you can't jump, chect if caps lock is on.\n\n"); // 설명 
 		system("pause");
 		system("cls");
 		Sleep(100);
-		while (retry == 1) // 게임을 계속 한다고 입력했을때 실행됨 
+		settingthegame();
+		while (1)
 		{
 			gotoxy(1, 1);
 			printf("score: %d", score); // score 출력 
@@ -196,30 +222,47 @@ int main()
 					{
 						continue;
 					}
-					gotoxy(j + 5, i);
-					printf("%d", mainarr[i][j]);
+					if (mainarr[i][j] == 1)
+					{
+						gotoxy(j + 5, i);
+						printf("▨");
+					}
+					if (mainarr[i][j] == 2)
+					{
+						gotoxy(j + 5, i);
+						printf("!");
+					}
+					if (mainarr[i][j] == 3)
+					{
+						gotoxy(j + 5, i);
+						printf("*");
+					}
+					if (mainarr[i][j] == 4)
+					{
+						gotoxy(j + 5, i);
+						printf("@");
+					}
 				}
 				printf("\n");
 			}
-			if ((kbhit() == 1 && getch() == jumpkey) && height == 0) // 점프조건 
+			int a = 0;
+			if (_kbhit())
+			{
+				a = _getch();
+			}
+			if ((a == jumpkey) && height == 0) // 점프조건 
 			{
 				updown = 1;
 			}
+			if ((a == jumpkey2) && height == 0) // 작은점프조건 
+			{
+				updown = 3;
+			}
 			jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
-			generatejelly(); // 얘 못만들겠음 
+			generatejelly(); 
 			if (randomstruct() == 1) // 장애물 생성해야할때
 			{
-				for (i = 0; i < 9; i++) // 장애물 자리에 있는 젤리 없애기
-				{
-					mainarr[20][110 + i] = 0;
-				}
-				for (i = 0; i < 4; i++) // 장애물 생성
-				{
-					for (j = 0; j < 7; j++)
-					{
-						mainarr[17 + i][111 + j] = notouch[i][j];
-					}
-				}
+				generatebadstuff();
 			}
 			gameover = isitgameover(); // 장애물에 부딪혔는지 체크 
 			isititem(); // 아이템을 먹었는지 체크 
@@ -263,8 +306,6 @@ int main()
 			if (getch() == 'r' || getch() == 'R') // retry
 			{
 				system("cls");
-				retry = 1;
-				score = 0;
 				break;
 			}
 			if (getch() != 'r' && getch() != 'R') // 딴거 누르면 끝남 
