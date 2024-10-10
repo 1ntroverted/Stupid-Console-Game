@@ -8,14 +8,19 @@
 int mainarr[25][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
 int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} };
-int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0;
+int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
 int isitgameover() // 장애물에 닿았는지 확인
 {
-	if (mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2 || mainarr[19 - height][4] == 2 || mainarr[19 - height][3] == 2)
+	if ((mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2 || mainarr[19 - height][4] == 2 || mainarr[19 - height][3] == 2) && waitforheal >= 15)
 	{
-		return 1;
+		health--;
+		waitforheal = 0;
+		if (health == 0)
+		{
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -211,6 +216,11 @@ int main()
 		{
 			gotoxy(1, 1);
 			printf("score: %d", score); // score 출력 
+			for (i = 0; i < health; i++)
+			{
+				gotoxy(1+i*2, 3);
+				printf("♥");
+			}
 			for (i = 0; i < 25; i++) // mainarr 출력 
 			{
 				for (j = 0; j < 120; j++)
@@ -272,6 +282,7 @@ int main()
 						continue;
 					}
 					mainarr[i][j] = mainarr[i][j + 1];
+			
 				}
 			}
 			for (i = 0; i < 2; i++) // 플레이어 칸은 유지시키기 
@@ -288,11 +299,12 @@ int main()
 				break;
 			}
 			curtime += 1;
+			waitforheal += 1;
 			if (curtime > 2) // 일정프레임마다 스코어 추가 
 			{
 				score++;
 			}
-			Sleep(3);
+			Sleep(10);
 			system("cls");
 		}
 		system("cls");
