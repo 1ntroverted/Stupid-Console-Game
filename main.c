@@ -152,7 +152,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 
 void generatejelly()
 {
-	if (jellywait == 3)
+	if (jellywait == 2)
 	{
 		mainarr[20][118] = 3;
 		jellywait = 0;
@@ -299,7 +299,7 @@ int main()
 			system("cls");
 		}
 		system("cls");
-		Sleep(300);
+		Sleep(1300);
 		printf("Game Over\nyour score: %d\n\nretry: 'r'\nend game: any key except 'r'", score);
 		while (1)
 		{
