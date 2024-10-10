@@ -7,13 +7,13 @@
 
 int mainarr[25][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
-int notouch2[6][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} };
+int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} };
 int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
 int isitgameover() // 장애물에 닿았는지 확인
 {
-	if (mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2)
+	if (mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2 || mainarr[19 - height][4] == 2 || mainarr[19 - height][3] == 2)
 	{
 		return 1;
 	}
@@ -182,11 +182,11 @@ void generatebadstuff()
 		{
 			mainarr[20][111 + i] = 0;
 		}
-		for (i = 0; i < 6; i++) // 장애물 생성
+		for (i = 0; i < 7; i++) // 장애물 생성
 		{
 			for (j = 0; j < 5; j++)
 			{
-				mainarr[15 + i][112 + j] = notouch2[i][j];
+				mainarr[14 + i][112 + j] = notouch2[i][j];
 			}
 		}
 	}
@@ -296,8 +296,9 @@ int main()
 			system("cls");
 		}
 		system("cls");
+		printf("Game Over\n");
 		Sleep(1300);
-		printf("Game Over\nyour score: %d\n\nretry: 'r'\nend game: any key except 'r'", score);
+		printf("your score : % d\n\nretry: 'r'\nend game : any key except 'r'", score);
 		while (1)
 		{
 			char b = 0;
