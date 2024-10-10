@@ -292,7 +292,7 @@ int main()
 			{
 				score++;
 			}
-			Sleep(10);
+			Sleep(3);
 			system("cls");
 		}
 		system("cls");
