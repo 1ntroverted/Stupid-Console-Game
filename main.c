@@ -303,12 +303,14 @@ int main()
 		printf("Game Over\nyour score: %d\n\nretry: 'r'\nend game: any key except 'r'", score);
 		while (1)
 		{
-			if (getch() == 'r' || getch() == 'R') // retry
+			char b = 0;
+			b = _getch();
+			if (b == 'r' || b == 'R') // retry
 			{
 				system("cls");
 				break;
 			}
-			if (getch() != 'r' && getch() != 'R') // 딴거 누르면 끝남 
+			if (b != 'r' && b != 'R') // 딴거 누르면 끝남 
 			{
 				return 0;
 			}
