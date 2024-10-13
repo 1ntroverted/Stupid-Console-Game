@@ -6,8 +6,8 @@
 #pragma warning(disable:4996)
 
 int mainarr[25][120];
-int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} };
-int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} };
+int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
+int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
 int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
@@ -27,26 +27,26 @@ int isitgameover() // 장애물에 닿았는지 확인
 
 void isititem() // 아이템을 먹었는지 확인
 {
-	if (mainarr[20 - height][4] == 3 || mainarr[20 - height][3] == 3 || mainarr[19 - height][4] == 3 || mainarr[19 - height][3] == 3)
+	if (mainarr[20 - height][4] == 3 || mainarr[20 - height][3] == 3 || mainarr[19 - height][4] == 3 || mainarr[19 - height][3] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
 	{
-		if (height > 0)
+		if (height > 0) // 장애물에 있는 젤리는 보너스 줌 
 		{
 			score += 300;
 		}
-		else
+		else // 젤리 먹음 (장애물 x)
 		{
 			score += 50;
 		}
 	}
 }
 
-void SetConsole()
+void SetConsole() // 콘솔창 세팅 
 {
 	system("title Temu Untitled Game");
 	system("mode con:cols=130 lines=35");
 	CONSOLE_CURSOR_INFO ConsoleCursor;
-	ConsoleCursor.bVisible = 0;
-	ConsoleCursor.dwSize = 0;
+	ConsoleCursor.bVisible = 0; // 커서 안보임 
+	ConsoleCursor.dwSize = 0; // 사이즈 0 
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorInfo(consoleHandle, &ConsoleCursor);
 }
@@ -60,12 +60,12 @@ void gotoxy(int x, int y)
 
 void jump() // 점프
 {
-	if (updown == 1 || updown == 3)
+	if (updown == 1 || updown == 3) // 올라갈때 
 	{
-		height++;
+		height++; // 높이++ 
 		for (j = 0; j < 2; j++)
 		{
-			mainarr[19 - height + 2][2 + j] = 0;
+			mainarr[19 - height + 2][2 + j] = 0; //
 		}
 		for (i = 0; i < 2; i++)
 		{
@@ -152,7 +152,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	}
 }
 
-void generatejelly()
+void generatejelly() // 젤리 생성 
 {
 	if (jellywait == 2)
 	{
@@ -165,7 +165,7 @@ void generatejelly()
 	}
 }
 
-void generatebadstuff()
+void generatebadstuff() // 장애물 생성 
 {
 	if (rand() % 2 == 0) // 큰 장애물
 	{
@@ -229,24 +229,21 @@ int main()
 					{
 						continue;
 					}
+					gotoxy(j + 5, i);
 					if (mainarr[i][j] == 1)
 					{
-						gotoxy(j + 5, i);
-						printf("▨");
+						printf("￣");
 					}
 					if (mainarr[i][j] == 2)
 					{
-						gotoxy(j + 5, i);
 						printf("!");
 					}
 					if (mainarr[i][j] == 3)
 					{
-						gotoxy(j + 5, i);
 						printf("*");
 					}
 					if (mainarr[i][j] == 4)
 					{
-						gotoxy(j + 5, i);
 						printf("@");
 					}
 				}
@@ -304,12 +301,11 @@ int main()
 			{
 				score++;
 			}
-			Sleep(10);
 			system("cls");
 		}
 		system("cls");
 		printf("Game Over\n");
-		Sleep(1300);
+		Sleep(1000);
 		printf("your score : % d\n\nretry: 'r'\nend game : any key except 'r'", score);
 		while (1)
 		{
