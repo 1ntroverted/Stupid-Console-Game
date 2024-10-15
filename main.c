@@ -5,15 +5,18 @@
 #include<time.h>
 #pragma warning(disable:4996)
 
-int mainarr[25][120];
+int mainarr[10][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
 int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
-int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
+int i, j, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
+// updown = 플레이어 y좌표가 올라가는지 내려가는지 멈췄는지 여부
+// waitforstruct = 장애물이 스폰되고 나서 일정 프레임동안 안 스폰되는걸 구현하기 위해서 만든 변수
+
 char jumpkey = 'w', jumpkey2 = 'q';
 
 int isitgameover() // 장애물에 닿았는지 확인
 {
-	if ((mainarr[20 - height][4] == 2 || mainarr[20 - height][3] == 2 || mainarr[19 - height][4] == 2 || mainarr[19 - height][3] == 2) && waitforheal >= 15)
+	if ((mainarr[8 - height][4] == 2 || mainarr[8 - height][3] == 2 || mainarr[7 - height][4] == 2 || mainarr[7 - height][3] == 2) && waitforheal >= 15)
 	{
 		health--;
 		waitforheal = 0;
@@ -27,7 +30,7 @@ int isitgameover() // 장애물에 닿았는지 확인
 
 void isititem() // 아이템을 먹었는지 확인
 {
-	if (mainarr[20 - height][4] == 3 || mainarr[20 - height][3] == 3 || mainarr[19 - height][4] == 3 || mainarr[19 - height][3] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
+	if (mainarr[8 - height][4] == 3 || mainarr[8 - height][3] == 3 || mainarr[7 - height][4] == 3 || mainarr[7 - height][3] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
 	{
 		if (height > 0) // 장애물에 있는 아이템은 보너스 줌 
 		{
@@ -45,8 +48,8 @@ void SetConsole() // 콘솔창 세팅
 	system("title Temu Untitled Game");
 	system("mode con:cols=130 lines=35");
 	CONSOLE_CURSOR_INFO ConsoleCursor;
-	ConsoleCursor.bVisible = 0; // 커서 안보임 
-	ConsoleCursor.dwSize = 0; // 사이즈 0 
+	ConsoleCursor.bVisible = 0;
+	ConsoleCursor.dwSize = 1;
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorInfo(consoleHandle, &ConsoleCursor);
 }
@@ -60,20 +63,22 @@ void gotoxy(int x, int y)
 
 void jump() // 점프
 {
-	if (updown == 1 || updown == 3) // 올라갈때 
+	for (i = 0; i < 2; i++)
 	{
-		height++; // 높이++ 
 		for (j = 0; j < 2; j++)
 		{
-			mainarr[19 - height + 2][2 + j] = 0; //
+			mainarr[7 - height + i][2 + j] = 0;
 		}
+	}
+	if (updown == 1 || updown == 3) // 올라갈때 
+	{
+		height++;
 		for (i = 0; i < 2; i++)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				mainarr[19 - height + i][2 + j] = 4;
+				mainarr[7 - height + i][2 + j] = 4;
 			}
-			printf("\n");
 		}
 		if (updown == 3 && height >= 4)
 		{
@@ -86,18 +91,13 @@ void jump() // 점프
 	}
 	if (updown == 2 || updown == 4)
 	{
-		for (j = 0; j < 2; j++)
-		{
-			mainarr[19 - height][2 + j] = 0;
-		}
 		height--;
 		for (i = 0; i < 2; i++)
 		{
 			for (j = 0; j < 2; j++)
 			{
-				mainarr[19 - height + i][2 + j] = 4;
+				mainarr[7 - height + i][2 + j] = 4;
 			}
-			printf("\n");
 		}
 		if (height == 0)
 		{
@@ -111,7 +111,6 @@ int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 	if (waitforstruct >= 25 && rand() % 8 == 0)
 	{
 		waitforstruct = 0;
-		istherestruct = 1;
 		return 1;
 	}
 	waitforstruct++;
@@ -123,12 +122,11 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	height = 0;
 	updown = 1;
 	waitforstruct = 0;
-	istherestruct = 0;
 	score = 0;
 
 	// 바닥 만들기
 
-	for (i = 0; i < 25; i++)
+	for (i = 0; i < 10; i++)
 	{
 		for (j = 0; j < 120; j++)
 		{
@@ -137,17 +135,17 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	}
 	for (i = 0; i < 120; i++)
 	{
-		mainarr[21][i] = 1;
+		mainarr[9][i] = 1;
 	}
 	for (i = 0; i < 40; i++)
 	{
-		mainarr[20][i * 3] = 3;
+		mainarr[8][i * 3] = 3;
 	}
 	for (i = 0; i < 2; i++)
 	{
 		for (j = 0; j < 2; j++)
 		{
-			mainarr[19 + i][2 + j] = 4;
+			mainarr[7 + i][2 + j] = 4;
 		}
 	}
 }
@@ -156,7 +154,7 @@ void generatejelly() // 아이템 생성
 {
 	if (jellywait == 2)
 	{
-		mainarr[20][118] = 3;
+		mainarr[8][118] = 3;
 		jellywait = 0;
 	}
 	else
@@ -171,13 +169,13 @@ void generatebadstuff() // 장애물 생성
 	{
 		for (i = 0; i < 9; i++) // 장애물 자리에 있는 아이템 없애기
 		{
-			mainarr[20][110 + i] = 0;
+			mainarr[8][110 + i] = 0;
 		}
 		for (i = 0; i < 4; i++) // 장애물 생성 (아이템 포함) 
 		{
 			for (j = 0; j < 7; j++)
 			{
-				mainarr[17 + i][111 + j] = notouch[i][j];
+				mainarr[5 + i][111 + j] = notouch[i][j];
 			}
 		}
 	}
@@ -185,13 +183,13 @@ void generatebadstuff() // 장애물 생성
 	{
 		for (i = 0; i < 7; i++) // 장애물 자리에 있는 아이템 없애기
 		{
-			mainarr[20][111 + i] = 0;
+			mainarr[8][111 + i] = 0;
 		}
 		for (i = 0; i < 7; i++) // 장애물 생성 (아이템 포함) 
 		{
 			for (j = 0; j < 5; j++)
 			{
-				mainarr[14 + i][112 + j] = notouch2[i][j];
+				mainarr[2 + i][112 + j] = notouch2[i][j];
 			}
 		}
 	}
@@ -218,18 +216,23 @@ int main()
 			printf("score: %d", score); // score 출력 
 			for (i = 0; i < health; i++)
 			{
-				gotoxy(1+i*2, 3);
+				gotoxy(1 + i * 2, 3);
 				printf("♥");
 			}
-			for (i = 0; i < 25; i++) // mainarr 출력 
+			if (updown != 0)
+			{
+				jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
+			}
+			for (i = 0; i < 10; i++) // mainarr 출력 
 			{
 				for (j = 0; j < 120; j++)
 				{
 					if (mainarr[i][j] == 0)
 					{
+						printf("  ");
 						continue;
 					}
-					gotoxy(j + 5, i);
+					gotoxy(j + 5, i+15);
 					if (mainarr[i][j] == 1) // 바닥 
 					{
 						printf("￣");
@@ -262,7 +265,7 @@ int main()
 			{
 				updown = 3;
 			}
-			jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
+			//jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 			generatejelly(); // 일정 시간마다 아이템 추가 
 			if (randomstruct() == 1) // 장애물 생성해야할때
 			{
@@ -270,7 +273,7 @@ int main()
 			}
 			gameover = isitgameover(); // 장애물에 부딪혔는지 체크 
 			isititem(); // 아이템을 먹었는지 체크 
-			for (i = 0; i < 25; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
+			for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 			{
 				for (j = 0; j < 119; j++)
 				{
@@ -279,24 +282,24 @@ int main()
 			}
 			for (i = 0; i < 2; i++) // 플레이어의 x좌표는 유지시키기 
 			{
-				mainarr[19 + i - height][3] = 4;
-				mainarr[19 + i - height][1] = 0;
+				mainarr[7 + i - height][3] = 4;
+				mainarr[7 + i - height][1] = 0;
 			}
-			for (j = 0; j < 6; j++)
+			for (j = 0; j < 9; j++)
 			{
-				mainarr[15 + j][1] = 0; // 플레이어를 지난 오브젝트는 삭제됨
+				mainarr[j][1] = 0; // 플레이어를 지난 오브젝트는 삭제됨
 			}
 			if (gameover == 1) // 게임오버면 while문 나가기 
 			{
 				break;
 			}
 			curtime += 1; // 프레임마다 추가되는 변수 
-			waitforheal += 1; // 당애물에 닿으면 일정 시간동안 장애물 판정을 무시하는 변수 
+			waitforheal += 1; // 장애물에 닿으면 일정 시간동안 장애물 판정을 무시하는 변수 
 			if (curtime > 2) // 일정프레임마다 스코어 추가 
 			{
 				score++;
 			}
-			system("cls");
+			Sleep(10);
 		}
 		system("cls");
 		printf("Game Over\n");
