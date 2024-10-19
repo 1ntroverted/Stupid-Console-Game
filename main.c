@@ -8,7 +8,7 @@
 int mainarr[25][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
 int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
-int i, j, height = 0, updown = 0, waitforstruct = 0, istherestruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
+int i, j, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
 int isitgameover() // 장애물에 닿았는지 확인
@@ -111,7 +111,6 @@ int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 	if (waitforstruct >= 25 && rand() % 8 == 0)
 	{
 		waitforstruct = 0;
-		istherestruct = 1;
 		return 1;
 	}
 	waitforstruct++;
@@ -121,9 +120,9 @@ int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배열 초기화)
 {
 	height = 0;
+	health = 3;
 	updown = 1;
 	waitforstruct = 0;
-	istherestruct = 0;
 	score = 0;
 
 	// 바닥 만들기
