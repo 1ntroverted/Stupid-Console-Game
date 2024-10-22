@@ -206,7 +206,7 @@ int main()
 		// 게임 시작할때 정수 초기화 
 		int gameover = 0;
 		generatejelly();
-		printf("Press any key to start the game.\nJumping = 'q' or 'w'\nif you can't jump, chect if caps lock is on.\n\n"); // 설명 
+		printf("Press any key to start the game.\nJumping = 'q' or 'w'\nif you can't jump, check if caps lock is on.\n\n"); // 설명 
 		system("pause");
 		system("cls");
 		Sleep(100);
