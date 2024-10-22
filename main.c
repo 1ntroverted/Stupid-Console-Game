@@ -199,7 +199,6 @@ void generatebadstuff() // 장애물 생성
 int main()
 {
 	srand(time(NULL));
-	int random;
 	SetConsole();
 	while (1)
 	{
