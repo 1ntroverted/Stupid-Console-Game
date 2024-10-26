@@ -43,7 +43,7 @@ void isititem() // 아이템을 먹었는지 확인
 void SetConsole() // 콘솔창 세팅 
 {
 	system("title ");
-	system("mode con:cols=130 lines=27");
+	system("mode con:cols=130 lines=28");
 	CONSOLE_CURSOR_INFO ConsoleCursor;
 	ConsoleCursor.bVisible = 0;
 	ConsoleCursor.dwSize = 1;
@@ -207,6 +207,10 @@ void health_and_score()
 		gotoxy(1 + i * 2, 3);
 		printf("♥");
 	}
+	gotoxy(5, 23);
+	printf("Jump Keys : 'q' for small jump, 'w' for normal jump.");
+	gotoxy(5,24);
+	printf("if you can't jump, check if caps lock is on.");
 }
 
 int main()
@@ -218,10 +222,6 @@ int main()
 		// 게임 시작할때 정수 초기화 
 		int gameover = 0;
 		generate_jelly();
-		printf("Jumping Keys : 'q' for small jump, 'w' for normal jump.\n\nif you can't jump, check if caps lock is on.\n\n"); // 설명 
-		system("pause");
-		system("cls");
-		Sleep(100);
 		settingthegame();
 		while (1)
 		{
@@ -312,9 +312,9 @@ int main()
 			}
 		}
 		system("cls");
-		Sleep(800);
+		Sleep(300);
 		printf("Game Over\n");
-		printf("your score : % d\n\nretry: 'r'\nend game : any key except 'r'", score);
+		printf("your score : % d\n\nretry: 'r'\n", score);
 		while (1)
 		{
 			char b = 0;
@@ -324,10 +324,7 @@ int main()
 				system("cls");
 				break;
 			}
-			if (b != 'r' && b != 'R') // 딴거 누르면 끝남 
-			{
-				return 0;
-			}
 		}
+		Sleep(200);
 	}
 }
