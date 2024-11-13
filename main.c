@@ -219,7 +219,7 @@ void health_and_score()
 	gotoxy(5, 23);
 	printf("Jump Keys : 'q' for small jump, 'w' for normal jump.");
 	gotoxy(5, 24);
-	printf("\033[33mif you can't jump, check if caps lock is on.\033[0m 현재 arr 상태 %d %d %d %d", mainarr[7][3], mainarr[7][4], mainarr[8][3], mainarr[8][4]);
+	printf("\033[33mif you can't jump, check if caps lock is on.\033[0m");
 }
 
 int main()
@@ -236,8 +236,8 @@ int main()
 		}
 		for (i = 0; i < 2; i++)
 		{
-			player[i].x = 8;
-			player[i].y = 19 + i;
+			player[i+2].x = 8;
+			player[i+2].y = 19 + i;
 		}
 		int gameover = 0;
 		generate_jelly();
