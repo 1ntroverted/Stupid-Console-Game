@@ -299,16 +299,11 @@ int main()
 			settingthegame();
 			while (1)
 			{
-				int a = 0;
-				if (_kbhit())
-				{
-					a = _getch();
-				}
-				if ((a == jumpkey) && height == 0) // 점프조건 
+				if ((GetAsyncKeyState(0x57) & 0x8000) && height == 0) // 점프조건 
 				{
 					updown = 1;
 				}
-				if ((a == jumpkey2) && height == 0) // 작은점프조건 
+				if ((GetAsyncKeyState(0x51) & 0x8000) && height == 0) // 작은점프조건 
 				{
 					updown = 3;
 				}
@@ -321,7 +316,6 @@ int main()
 				{
 					generate_badstuff(); // 장애물을 생성시키는 함수 실행 
 				}
-				gameover = enemytouchcheck(); // 장애물에 부딪혔는지 체크 
 				itemcheck(); // 아이템을 먹었는지 체크 
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
@@ -378,6 +372,7 @@ int main()
 				}
 				gotoxy(player[0].x, player[0].y);
 				printf("@");
+				gameover = enemytouchcheck(); // 장애물에 부딪혔는지 체크 
 				for (i = 0; i < 4; i++) // 플레이어 출력
 				{
 					gotoxy(player[i].x, player[i].y);
@@ -422,12 +417,7 @@ int main()
 			settingthegame();
 			while (1)
 			{
-				int a = 0;
-				if (_kbhit())
-				{
-					a = _getch();
-				}
-				if (a == jumpkey) // 점프조건 
+				if (GetAsyncKeyState(0x57) & 0x8000) // 점프조건 
 				{
 					updown = 1;
 				}
@@ -439,10 +429,7 @@ int main()
 				{
 					wave(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 				}
-				
 				wavestructure(); // 장애물 추가 예정
-				
-				gameover = waveenemytouchcheck(); // 장애물에 부딪혔는지 체크
 				waveitemcheck(); // 아이템을 먹었는지 체크
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
@@ -490,6 +477,7 @@ int main()
 				}
 				gotoxy(player[0].x, player[0].y);
 				printf("@");
+				gameover = waveenemytouchcheck(); // 장애물에 부딪혔는지 체크
 				health_and_score();
 				if (gameover == 1) // 게임오버면 while문 나가기 
 				{
@@ -501,7 +489,6 @@ int main()
 				{
 					score++;
 				}
-				printf("%d", a);
 			}
 			system("cls");
 			Sleep(300);
