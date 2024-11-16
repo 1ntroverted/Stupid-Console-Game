@@ -18,7 +18,7 @@ typedef struct coordin {
 
 coord player[4];
 
-int isitgameover() // 장애물에 닿았는지 확인
+int enemytouchcheck() // 장애물에 닿았는지 확인
 {
 	for(i=0;i<4;i++)
 	{
@@ -35,7 +35,7 @@ int isitgameover() // 장애물에 닿았는지 확인
 	return 0;
 }
 
-void isititem() // 아이템을 먹었는지 확인
+void itemcheck() // 아이템을 먹었는지 확인
 {
 	for(i=0;i<4;i++)
 	{
@@ -56,7 +56,7 @@ void isititem() // 아이템을 먹었는지 확인
 	}
 }
 
-int wavegameover() // 장애물에 닿았는지 확인
+int waveenemytouchcheck() // 장애물에 닿았는지 확인
 {
 	if (mainarr[player[0].y-12][player[0].x-5] == 2 && waitforheal >= 15)
 	{
@@ -70,7 +70,7 @@ int wavegameover() // 장애물에 닿았는지 확인
 	return 0;
 }
 
-void waveitem() // 아이템을 먹었는지 확인
+void waveitemcheck() // 아이템을 먹었는지 확인
 {
 	if (mainarr[player[0].y-12][player[0].x-5] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
 	{
@@ -97,7 +97,7 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Cur);
 }
 
-void jump() // 점프
+void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가는 함수 
 {
 	for (i = 0; i < 2; i++)
 	{
@@ -122,7 +122,7 @@ void jump() // 점프
 			updown++;
 		}
 	}
-	if (updown == 2 || updown == 4)
+	if (updown == 2 || updown == 4) // 내려강때 (짝수) 
 	{
 		height--;
 		for (i = 0; i < 4; i++)
@@ -136,7 +136,7 @@ void jump() // 점프
 	}
 }
 
-void wave() // 웨이브 모드 점프함수
+void wave() // jump 함수 웨이브 모드 버전 
 {
 	if(updown == 1)
 	{
@@ -254,10 +254,20 @@ void health_and_score()
 		gotoxy(1 + i * 2, 3);
 		printf("\033[31m♥\033[0m");
 	}
-	gotoxy(5, 23);
-	printf("Jump Keys : 'q' for small jump, 'w' for normal jump.");
-	gotoxy(5, 24);
-	printf("\033[33mif you can't jump, check if caps lock is on.\033[0m");
+	if(input == 1) // 점프모드 
+	{
+		gotoxy(5, 23);
+		printf("Jump Keys : 'q' for small jump, 'w' for normal jump.");
+		gotoxy(5, 24);
+		printf("\033[33mif you can't jump, check if caps lock is on.\033[0m");
+	}
+	else if(input == 2) // 웨이브모드 
+	{
+		gotoxy(5, 23);
+		printf("Jump Key : hold 'w' to go up");
+		gotoxy(5, 24);
+		printf("\033[33mif you can't go up, check if caps lock is on.\033[0m");
+	}
 }
 
 int main()
@@ -311,8 +321,8 @@ int main()
 				{
 					generate_badstuff(); // 장애물을 생성시키는 함수 실행 
 				}
-				gameover = isitgameover(); // 장애물에 부딪혔는지 체크 
-				isititem(); // 아이템을 먹었는지 체크 
+				gameover = enemytouchcheck(); // 장애물에 부딪혔는지 체크 
+				itemcheck(); // 아이템을 먹었는지 체크 
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
 					for (j = 0; j < 119; j++)
@@ -419,8 +429,8 @@ int main()
 				
 				wavestructure(); // 장애물 추가 예정
 				
-				gameover = wavegameover(); // 장애물에 부딪혔는지 체크
-				waveitem(); // 아이템을 먹었는지 체크
+				gameover = waveenemytouchcheck(); // 장애물에 부딪혔는지 체크
+				waveitemcheck(); // 아이템을 먹었는지 체크
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
 					for (j = 0; j < 119; j++)
