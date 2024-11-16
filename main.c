@@ -8,7 +8,7 @@
 int mainarr[10][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
 int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
-int i, j, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0, input = 0;
+int i, j, k, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0, input = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
 typedef struct coordin {
@@ -278,7 +278,7 @@ int main()
 	{
 		printf("choose the mode\n");
 		printf("1. jumping mode\n");
-		printf("2. wave mode\n");
+		printf("2. wave mode (미완성)\n");
 		scanf("%d", &input);
 		if(input == 1) // 점핑모드 
 		{
@@ -338,13 +338,26 @@ int main()
 				{
 					for (j = 0; j < 120; j++)
 					{
+						int skip = 0;
 						gotoxy(j + 5, i + 12);
+						for(k=0;k<4;k++)
+						{
+							if(j + 5 == player[k].x && i + 12 == player[k].y)
+							{
+								printf("@");
+								skip = 1;
+								break;
+							}
+						}
+						if(skip == 1)
+						{
+							continue;
+						}
 						if (mainarr[i][j] == 0)
 						{
 							printf("  ");
 							continue;
 						}
-	
 						if (mainarr[i][j] == 1) // 바닥 
 						{
 							printf("￣");
@@ -447,12 +460,16 @@ int main()
 					for (j = 0; j < 120; j++)
 					{
 						gotoxy(j + 5, i + 12);
+						if(j + 5 == player[0].x && i + 12 == player[0].y)
+						{
+							printf("@");
+							continue;
+						}
 						if (mainarr[i][j] == 0)
 						{
 							printf("  ");
 							continue;
 						}
-	
 						if (mainarr[i][j] == 1) // 바닥 
 						{
 							printf("￣");
@@ -484,6 +501,7 @@ int main()
 				{
 					score++;
 				}
+				printf("%d", a);
 			}
 			system("cls");
 			Sleep(300);
