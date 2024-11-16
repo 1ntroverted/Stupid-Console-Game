@@ -8,7 +8,7 @@
 int mainarr[10][120];
 int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
 int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
-int i, j, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0;
+int i, j, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0, input = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
 typedef struct coordin {
@@ -20,13 +20,16 @@ coord player[4];
 
 int isitgameover() // 장애물에 닿았는지 확인
 {
-	if ((mainarr[8 - height][4] == 2 || mainarr[8 - height][3] == 2 || mainarr[7 - height][4] == 2 || mainarr[7 - height][3] == 2) && waitforheal >= 15)
+	for(i=0;i<4;i++)
 	{
-		health--;
-		waitforheal = 0;
-		if (health <= 0)
+		if (mainarr[player[i].y-12][player[i].x-5] == 2 && waitforheal >= 15)
 		{
-			return 1;
+			health--;
+			waitforheal = 0;
+			if (health <= 0)
+			{
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -34,15 +37,21 @@ int isitgameover() // 장애물에 닿았는지 확인
 
 void isititem() // 아이템을 먹었는지 확인
 {
-	if (mainarr[8 - height][4] == 3 || mainarr[8 - height][3] == 3 || mainarr[7 - height][4] == 3 || mainarr[7 - height][3] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
+	for(i=0;i<4;i++)
 	{
-		if (height > 0) // 장애물에 있는 아이템은 보너스 줌
+		if (mainarr[player[i].y-12][player[i].x-5] == 3)
 		{
-			score += 500;
-		}
-		else // 바닥에 있는 아이템 먹음
-		{
-			score += 30;
+			mainarr[player[i].y-12][player[i].x-5] = 0;
+			if (height > 0) // 장애물에 있는 아이템은 보너스 줌
+			{			
+				score += 500;
+				break;
+			}
+			else // 바닥에 있는 아이템 먹음
+			{
+				score += 30;
+				break;
+			}
 		}
 	}
 }
@@ -66,6 +75,7 @@ void waveitem() // 아이템을 먹었는지 확인
 	if (mainarr[player[0].y-12][player[0].x-5] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
 	{
 		score += 50;
+		mainarr[player[0].y-12][player[0].x-5] = 0;
 	}
 }
 
@@ -130,9 +140,9 @@ void wave() // 웨이브 모드 점프함수
 {
 	if(updown == 1)
 	{
-		if(height < 9)
+		if(height < 8)
 		{
-			player[i].y--;
+			player[0].y--;
 			height++;
 		}
 	}
@@ -140,7 +150,7 @@ void wave() // 웨이브 모드 점프함수
 	{
 		if(height > 0)
 		{
-			player[i].y++;
+			player[0].y++;
 			height--;
 		}
 	}
@@ -178,10 +188,6 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 	{
 		mainarr[9][i] = 1;
 	}
-	for (i = 0; i < 40; i++)
-	{
-		mainarr[8][i * 3] = 3;
-	}
 }
 
 void generate_jelly() // 아이템 생성 
@@ -195,6 +201,11 @@ void generate_jelly() // 아이템 생성
 	{
 		jellywait++;
 	}
+}
+
+void wavestructure() // 아이템 생성 
+{
+	// 만들예정 
 }
 
 void generate_badstuff() // 장애물 생성 
@@ -258,7 +269,6 @@ int main()
 		printf("choose the mode\n");
 		printf("1. jumping mode\n");
 		printf("2. wave mode\n");
-		int input = 0;
 		scanf("%d", &input);
 		if(input == 1) // 점핑모드 
 		{
@@ -343,7 +353,7 @@ int main()
 					}
 					printf("\n");
 				}
-				gotoxy(player[i].x, player[i].y);
+				gotoxy(player[0].x, player[0].y);
 				printf("@");
 				for (i = 0; i < 4; i++) // 플레이어 출력
 				{
@@ -378,6 +388,7 @@ int main()
 			}
 			Sleep(200);
 		}
+		
 		if(input == 2) // 웨이브 모드 
 		{
 			system("cls");
@@ -405,13 +416,11 @@ int main()
 				{
 					wave(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 				}
-				generate_jelly(); // 일정 시간마다 아이템 추가 
-				if (randomstruct() == 1) // 장애물 생성해야할때
-				{
-					generate_badstuff(); // 장애물을 생성시키는 함수 실행 
-				}
-				gameover = wavegameover(); // 장애물에 부딪혔는지 체크 
-				waveitem(); // 아이템을 먹었는지 체크 
+				
+				wavestructure(); // 장애물 추가 예정
+				
+				gameover = wavegameover(); // 장애물에 부딪혔는지 체크
+				waveitem(); // 아이템을 먹었는지 체크
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
 					for (j = 0; j < 119; j++)
@@ -482,7 +491,8 @@ int main()
 			}
 			Sleep(200);
 		}
-		else
+		
+		else // 잘못 골랐을때 
 		{
 			printf("choose 1 or 2");
 			Sleep(500);
