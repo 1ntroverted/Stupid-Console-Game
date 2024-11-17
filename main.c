@@ -271,7 +271,7 @@ void health_and_score()
 		gotoxy(1 + i * 2, 3);
 		printf("  ");
 	}
-	for (i = 0; i < health; i++)
+	for (i = 0; i < health; i++) // 남은 목숨 출력 
 	{
 		gotoxy(1 + i * 2, 3);
 		printf("\033[31m♥\033[0m");
@@ -299,7 +299,7 @@ int main()
 	while (1)
 	{
 		printf("choose the mode by typing 1 or 2.\n");
-		printf("1. human mode\n");
+		printf("1. runner mode\n");
 		printf("2. wave mode\n");
 		scanf("%d", &input);
 		if(input == 1) // 점핑모드 
@@ -509,11 +509,7 @@ int main()
 				{
 					break;
 				}
-				curtime += 1; // 프레임마다 추가되는 변수 
-				if (curtime > 2) // 일정프레임마다 스코어 추가 
-				{
-					score++;
-				}
+				score+=2;
 			}
 			system("cls");
 			Sleep(300);
