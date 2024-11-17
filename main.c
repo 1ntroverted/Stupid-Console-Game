@@ -112,16 +112,16 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 		{
 			player[i].y--;
 		}
-		if (updown == 3 && height >= 4)
+		if (updown == 3 && height >= 4) // 최고 높이 도달 
 		{
 			updown++;
 		}
-		if (height >= 7)
+		if (height >= 7) // 최고 높이 도달 
 		{
 			updown++;
 		}
 	}
-	if (updown == 2 || updown == 4) // 내려강때 (짝수) 
+	if (updown == 2 || updown == 4) // 내려갈때 (짝수) 
 	{
 		height--;
 		for (i = 0; i < 4; i++)
