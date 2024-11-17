@@ -6,8 +6,8 @@
 #pragma warning(disable:4996)
 
 int mainarr[10][120];
-int notouch[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
-int notouch2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
+int obstacle[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
+int obstacle2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
 int i, j, k, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0, input = 0;
 char jumpkey = 'w', jumpkey2 = 'q';
 
@@ -58,10 +58,9 @@ void itemcheck() // 아이템을 먹었는지 확인
 
 int waveenemytouchcheck() // 장애물에 닿았는지 확인
 {
-	if (mainarr[player[0].y-12][player[0].x-5] == 2 && waitforheal >= 15)
+	if (mainarr[player[0].y-12][player[0].x-5] == 2)
 	{
 		health--;
-		waitforheal = 0;
 		if (health <= 0)
 		{
 			return 1;
@@ -72,9 +71,9 @@ int waveenemytouchcheck() // 장애물에 닿았는지 확인
 
 void waveitemcheck() // 아이템을 먹었는지 확인
 {
-	if (mainarr[player[0].y-12][player[0].x-5] == 3) // 아이템이 다음 프레임에 캐릭터한테 닿으면 
+	if (mainarr[player[0].y-12][player[0].x-5] == 3)
 	{
-		score += 50;
+		score += 300;
 		mainarr[player[0].y-12][player[0].x-5] = 0;
 	}
 }
@@ -203,12 +202,35 @@ void generate_jelly() // 아이템 생성
 	}
 }
 
-void wavestructure() // 아이템 생성 
+void generate_waveobstacle() // wave 장애물, 아이템 생성 
 {
-	// 만들예정 
+	if(waitforstruct >= 10)
+	{
+		waitforstruct = 0;
+		if(rand() % 2 == 0)
+		{
+			int waveobstapos = rand() % 6;
+			for(i=0;i<waveobstapos;i++)
+			{
+				mainarr[i][111] = 2;
+			}
+			for(i=waveobstapos+3;i<9;i++)
+			{
+				mainarr[i][111] = 2;
+			}
+		}
+	}
+	else
+	{
+		if(rand()%3 == 0)
+		{
+			mainarr[rand()%9][111] = 3;
+		}
+		waitforstruct++;
+	}
 }
 
-void generate_badstuff() // 장애물 생성 
+void generate_obstacle() // 장애물 생성 
 {
 	if (rand() % 2 == 0) // 큰 장애물
 	{
@@ -220,7 +242,7 @@ void generate_badstuff() // 장애물 생성
 		{
 			for (j = 0; j < 7; j++)
 			{
-				mainarr[5 + i][111 + j] = notouch[i][j];
+				mainarr[5 + i][111 + j] = obstacle[i][j];
 			}
 		}
 	}
@@ -234,7 +256,7 @@ void generate_badstuff() // 장애물 생성
 		{
 			for (j = 0; j < 5; j++)
 			{
-				mainarr[2 + i][112 + j] = notouch2[i][j];
+				mainarr[2 + i][112 + j] = obstacle2[i][j];
 			}
 		}
 	}
@@ -276,9 +298,9 @@ int main()
 	SetConsole();
 	while (1)
 	{
-		printf("choose the mode\n");
-		printf("1. jumping mode\n");
-		printf("2. wave mode (미완성)\n");
+		printf("choose the mode by typing 1 or 2.\n");
+		printf("1. human mode\n");
+		printf("2. wave mode\n");
 		scanf("%d", &input);
 		if(input == 1) // 점핑모드 
 		{
@@ -295,7 +317,6 @@ int main()
 				player[i+2].y = 19 + i;
 			}
 			int gameover = 0;
-			generate_jelly();
 			settingthegame();
 			while (1)
 			{
@@ -314,7 +335,7 @@ int main()
 				generate_jelly(); // 일정 시간마다 아이템 추가 
 				if (randomstruct() == 1) // 장애물 생성해야할때
 				{
-					generate_badstuff(); // 장애물을 생성시키는 함수 실행 
+					generate_obstacle(); // 장애물을 생성시키는 함수 실행 
 				}
 				itemcheck(); // 아이템을 먹었는지 체크 
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
@@ -336,14 +357,14 @@ int main()
 						gotoxy(j + 5, i + 12);
 						for(k=0;k<4;k++)
 						{
-							if(j + 5 == player[k].x && i + 12 == player[k].y)
+							if(j + 5 == player[k].x && i + 12 == player[k].y) // mainarr랑 함께 플레이어 출력 
 							{
 								printf("@");
 								skip = 1;
 								break;
 							}
 						}
-						if(skip == 1)
+						if(skip == 1) // 플레이어 칸은 mainarr 출력 스킵 
 						{
 							continue;
 						}
@@ -425,12 +446,12 @@ int main()
 				{
 					updown = 2;
 				}
+				generate_waveobstacle(); // 장애물 추가 예정
+				waveitemcheck(); // 아이템을 먹었는지 체크
 				if (updown != 0)
 				{
 					wave(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 				}
-				wavestructure(); // 장애물 추가 예정
-				waveitemcheck(); // 아이템을 먹었는지 체크
 				for (i = 0; i < 10; i++) // 오브젝트의 x좌표를 -1씩 바꾸기 
 				{
 					for (j = 0; j < 119; j++)
@@ -441,6 +462,11 @@ int main()
 				for (j = 0; j < 9; j++)
 				{
 					mainarr[j][0] = 0; // 플레이어를 지난 오브젝트는 삭제됨
+				}
+				for(i=0;i<120;i++)
+				{
+					gotoxy(i + 5, 11);
+					printf("_");
 				}
 				for (i = 0; i < 10; i++) // mainarr 출력 
 				{
@@ -484,7 +510,6 @@ int main()
 					break;
 				}
 				curtime += 1; // 프레임마다 추가되는 변수 
-				waitforheal += 1; // 장애물에 닿으면 일정 시간동안 장애물 판정을 무시하는 변수 
 				if (curtime > 2) // 일정프레임마다 스코어 추가 
 				{
 					score++;
@@ -510,6 +535,7 @@ int main()
 		else // 잘못 골랐을때 
 		{
 			printf("choose 1 or 2");
+			input = 0;
 			Sleep(500);
 			system("cls");
 		}
