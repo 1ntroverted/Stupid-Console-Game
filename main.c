@@ -168,22 +168,22 @@ int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 
 void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배열 초기화)
 {
-	height = 0;
-	updown = 1;
+	height = 0; // 높이값 
+	updown = 1; // 점프 여부 
 	waitforstruct = 0;
 	score = 0;
 	health = 3;
 
 	// 바닥 만들기
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++) // mainarr 세팅 
 	{
 		for (j = 0; j < 120; j++)
 		{
 			mainarr[i][j] = 0;
 		}
 	}
-	for (i = 0; i < 120; i++)
+	for (i = 0; i < 120; i++) // 바닥 생성 
 	{
 		mainarr[9][i] = 1;
 	}
@@ -191,7 +191,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 
 void generate_jelly() // 아이템 생성 
 {
-	if (jellywait == 2)
+	if (jellywait == 2) // 일정시간 지남 
 	{
 		mainarr[8][118] = 3;
 		jellywait = 0;
@@ -204,10 +204,10 @@ void generate_jelly() // 아이템 생성
 
 void generate_waveobstacle() // wave 장애물, 아이템 생성 
 {
-	if(waitforstruct >= 10)
+	if(waitforstruct >= 10) // 조건 1
 	{
 		waitforstruct = 0;
-		if(rand() % 2 == 0)
+		if(rand() % 2 == 0) // 조건 2 (1/2 확률로 생성됨) 
 		{
 			int waveobstapos = rand() % 6;
 			for(i=0;i<waveobstapos;i++)
@@ -368,7 +368,7 @@ int main()
 						{
 							continue;
 						}
-						if (mainarr[i][j] == 0)
+						if (mainarr[i][j] == 0) // 아무것도 없음 
 						{
 							printf("  ");
 							continue;
@@ -446,8 +446,8 @@ int main()
 				{
 					updown = 2;
 				}
-				generate_waveobstacle(); // 장애물 추가 예정
-				waveitemcheck(); // 아이템을 먹었는지 체크
+				generate_waveobstacle(); // 장애물, 아이템 생성 
+				waveitemcheck(); // 아이템을 먹었는지 체크 
 				if (updown != 0)
 				{
 					wave(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
@@ -473,12 +473,12 @@ int main()
 					for (j = 0; j < 120; j++)
 					{
 						gotoxy(j + 5, i + 12);
-						if(j + 5 == player[0].x && i + 12 == player[0].y)
+						if(j + 5 == player[0].x && i + 12 == player[0].y) // mainarr랑 함께 플레이어 출력 
 						{
 							printf("@");
 							continue;
 						}
-						if (mainarr[i][j] == 0)
+						if (mainarr[i][j] == 0) // 아무것도 없음 
 						{
 							printf("  ");
 							continue;
@@ -509,7 +509,7 @@ int main()
 				{
 					break;
 				}
-				score+=2;
+				score += 2; // 점수 올리기 
 			}
 			system("cls");
 			Sleep(300);
