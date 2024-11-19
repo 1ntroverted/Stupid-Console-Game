@@ -19,9 +19,9 @@ coord player[4];
 
 int enemytouchcheck() // 장애물에 닿았는지 확인
 {
-	for(i=0;i<4;i++)
+	for (i = 0; i < 4; i++)
 	{
-		if (mainarr[player[i].y-12][player[i].x-5] == 2 && waitforheal >= 15)
+		if (mainarr[player[i].y - 12][player[i].x - 5] == 2 && waitforheal >= 15)
 		{
 			health--;
 			waitforheal = 0;
@@ -36,13 +36,13 @@ int enemytouchcheck() // 장애물에 닿았는지 확인
 
 void itemcheck() // 아이템을 먹었는지 확인
 {
-	for(i=0;i<4;i++)
+	for (i = 0; i < 4; i++)
 	{
-		if (mainarr[player[i].y-12][player[i].x-5] == 3)
+		if (mainarr[player[i].y - 12][player[i].x - 5] == 3)
 		{
-			mainarr[player[i].y-12][player[i].x-5] = 0;
+			mainarr[player[i].y - 12][player[i].x - 5] = 0;
 			if (height > 0) // 장애물에 있는 아이템은 보너스 줌
-			{			
+			{
 				score += 500;
 				break;
 			}
@@ -57,7 +57,7 @@ void itemcheck() // 아이템을 먹었는지 확인
 
 int waveenemytouchcheck() // 장애물에 닿았는지 확인
 {
-	if (mainarr[player[0].y-12][player[0].x-5] == 2)
+	if (mainarr[player[0].y - 12][player[0].x - 5] == 2)
 	{
 		health--;
 		if (health <= 0)
@@ -70,10 +70,10 @@ int waveenemytouchcheck() // 장애물에 닿았는지 확인
 
 void waveitemcheck() // 아이템을 먹었는지 확인
 {
-	if (mainarr[player[0].y-12][player[0].x-5] == 3)
+	if (mainarr[player[0].y - 12][player[0].x - 5] == 3)
 	{
 		score += 300;
-		mainarr[player[0].y-12][player[0].x-5] = 0;
+		mainarr[player[0].y - 12][player[0].x - 5] = 0;
 	}
 }
 
@@ -136,23 +136,23 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 
 void wave() // jump 함수 웨이브 모드 버전 
 {
-	if(updown == 1)
+	if (updown == 1)
 	{
-		if(height < 8)
+		if (height < 8)
 		{
 			player[0].y--;
 			height++;
 		}
 	}
-	if(updown == 2)
+	if (updown == 2)
 	{
-		if(height > 0)
+		if (height > 0)
 		{
 			player[0].y++;
 			height--;
 		}
 	}
-} 
+}
 
 int randomstruct() // 장애물 랜덤생성 (생성 성공하면 return 1)
 {
@@ -203,17 +203,17 @@ void generate_jelly() // 아이템 생성
 
 void generate_waveobstacle() // wave 장애물, 아이템 생성 
 {
-	if(waitforstruct >= 10) // 조건 1
+	if (waitforstruct >= 10) // 조건 1
 	{
 		waitforstruct = 0;
-		if(rand() % 2 == 0) // 조건 2 (1/2 확률로 생성됨) 
+		if (rand() % 2 == 0) // 조건 2 (1/2 확률로 생성됨) 
 		{
 			int waveobstapos = rand() % 6;
-			for(i=0;i<waveobstapos;i++)
+			for (i = 0; i < waveobstapos; i++)
 			{
 				mainarr[i][111] = 2;
 			}
-			for(i=waveobstapos+3;i<9;i++)
+			for (i = waveobstapos + 3; i < 9; i++)
 			{
 				mainarr[i][111] = 2;
 			}
@@ -221,9 +221,9 @@ void generate_waveobstacle() // wave 장애물, 아이템 생성
 	}
 	else
 	{
-		if(rand()%3 == 0)
+		if (rand() % 3 == 0)
 		{
-			mainarr[rand()%9][111] = 3;
+			mainarr[rand() % 9][111] = 3;
 		}
 		waitforstruct++;
 	}
@@ -275,19 +275,21 @@ void health_and_score()
 		gotoxy(1 + i * 2, 3);
 		printf("\033[31m♥\033[0m");
 	}
-	if(input == 1) // 점프모드 
+	if (input == 1) // 점프모드 
 	{
 		gotoxy(5, 23);
 		printf("Jump Keys : 'q' for small jump, 'w' for normal jump.");
 		gotoxy(5, 24);
 		printf("\033[33mif you can't jump, check if caps lock is on.\033[0m");
 	}
-	else if(input == 2) // 웨이브모드 
+	else if (input == 2) // 웨이브모드 
 	{
 		gotoxy(5, 23);
 		printf("Jump Key : hold 'w' or space bar to go up");
 		gotoxy(5, 24);
 		printf("\033[33mif you can't go up, check if caps lock is on.\033[0m");
+		gotoxy(5, 25);
+		printf("\033[31mThe game gets much faster after score reaches 10000.\033[0m");
 	}
 }
 
@@ -313,7 +315,7 @@ int main()
 				break;
 			}
 		}
-		if(input == 1) // 점핑모드 
+		if (input == 1) // 점핑모드 
 		{
 			system("cls");
 			// 게임 시작할때 정수 초기화 
@@ -324,8 +326,8 @@ int main()
 			}
 			for (i = 0; i < 2; i++)
 			{
-				player[i+2].x = 8;
-				player[i+2].y = 19 + i;
+				player[i + 2].x = 8;
+				player[i + 2].y = 19 + i;
 			}
 			int gameover = 0;
 			settingthegame();
@@ -366,16 +368,16 @@ int main()
 					{
 						int skip = 0;
 						gotoxy(j + 5, i + 12);
-						for(k=0;k<4;k++)
+						for (k = 0; k < 4; k++)
 						{
-							if(j + 5 == player[k].x && i + 12 == player[k].y) // mainarr랑 함께 플레이어 출력 
+							if (j + 5 == player[k].x && i + 12 == player[k].y) // mainarr랑 함께 플레이어 출력 
 							{
 								printf("@");
 								skip = 1;
 								break;
 							}
 						}
-						if(skip == 1) // 플레이어 칸은 mainarr 출력 스킵 
+						if (skip == 1) // 플레이어 칸은 mainarr 출력 스킵 
 						{
 							continue;
 						}
@@ -425,21 +427,24 @@ int main()
 			system("cls");
 			Sleep(300);
 			printf("Game Over\n");
-			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n", score);
+			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n\n", score);
+			printf("quit: 'esc'");
 			while (1)
 			{
-				char b = 0;
-				b = _getch();
-				if (b == 'r' || b == 'R') // retry
+				if (GetAsyncKeyState(0x52) & 0x8000) 
 				{
 					system("cls");
 					break;
 				}
+				else if (GetAsyncKeyState(0x1B) & 0x8000) // esc 누르면 게임 끝 
+				{
+					return 0;
+				}
 			}
 			Sleep(200);
 		}
-		
-		if(input == 2) // 웨이브 모드 
+
+		if (input == 2) // 웨이브 모드 
 		{
 			system("cls");
 			// 게임 시작할때 정수 초기화 
@@ -478,7 +483,7 @@ int main()
 				{
 					mainarr[j][0] = 0; // 플레이어를 지난 오브젝트는 삭제됨
 				}
-				for(i=0;i<120;i++)
+				for (i = 0; i < 120; i++)
 				{
 					gotoxy(i + 5, 11);
 					printf("_");
@@ -488,7 +493,7 @@ int main()
 					for (j = 0; j < 120; j++)
 					{
 						gotoxy(j + 5, i + 12);
-						if(j + 5 == player[0].x && i + 12 == player[0].y) // mainarr랑 함께 플레이어 출력 
+						if (j + 5 == player[0].x && i + 12 == player[0].y) // mainarr랑 함께 플레이어 출력 
 						{
 							printf("@");
 							continue;
@@ -525,26 +530,31 @@ int main()
 					break;
 				}
 				score += 2; // 점수 올리기 
+				if (score <= 10000) // 점수 낮을때만 속도 내리기
+				{
+					Sleep(10);
+				}
 			}
 			system("cls");
 			Sleep(300);
 			printf("Game Over\n");
-			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n", score);
+			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n\n", score);
 			printf("quit: 'esc'");
 			while (1)
 			{
-				if (GetAsyncKeyState(0x52) & 0x8000) // 점프조건 
+				if (GetAsyncKeyState(0x52) & 0x8000)
 				{
-					updown = 1;
+					system("cls");
+					break;
 				}
-				else if(GetAsyncKeyState(0x1B) & 0x8000) // esc 누르면 게임 끝 
+				else if (GetAsyncKeyState(0x1B) & 0x8000) // esc 누르면 게임 끝 
 				{
 					return 0;
 				}
 			}
 			Sleep(200);
 		}
-		
+
 		else // 잘못 골랐을때 
 		{
 			printf("choose 1 or 2");
