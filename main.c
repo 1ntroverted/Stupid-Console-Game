@@ -9,7 +9,6 @@ int mainarr[10][120];
 int obstacle[4][7] = { {0,3,0,2,0,3,0}, {3,0,2,2,2,0,3}, {0,2,2,2,2,2,0}, {2,2,2,2,2,2,2} }; // 큰 장애물 
 int obstacle2[7][5] = { {2,2,2,2,2}, {2,2,2,2,2}, {0,0,0,0,0}, {0,0,0,0,0}, {0,0,3,0,0}, {3,0,2,0,3}, {0,2,2,2,0} }; // 작은 장애물 
 int i, j, k, height = 0, updown = 0, waitforstruct = 0, score = 0, curtime, jellywait = 0, health = 3, waitforheal = 0, input = 0;
-char jumpkey = 'w', jumpkey2 = 'q';
 
 typedef struct coordin {
 	int x;
@@ -286,7 +285,7 @@ void health_and_score()
 	else if(input == 2) // 웨이브모드 
 	{
 		gotoxy(5, 23);
-		printf("Jump Key : hold 'w' to go up");
+		printf("Jump Key : hold 'w' or space bar to go up");
 		gotoxy(5, 24);
 		printf("\033[33mif you can't go up, check if caps lock is on.\033[0m");
 	}
@@ -301,7 +300,19 @@ int main()
 		printf("choose the mode by typing 1 or 2.\n");
 		printf("1. runner mode\n");
 		printf("2. wave mode\n");
-		scanf("%d", &input);
+		while (1) // 입력 받기 
+		{
+			if (GetAsyncKeyState(0x31) & 0x8000)
+			{
+				input = 1;
+				break;
+			}
+			else if (GetAsyncKeyState(0x32) & 0x8000)
+			{
+				input = 2;
+				break;
+			}
+		}
 		if(input == 1) // 점핑모드 
 		{
 			system("cls");
@@ -442,6 +453,10 @@ int main()
 				{
 					updown = 1;
 				}
+				else if (GetAsyncKeyState(0x20) & 0x8000) // 점프조건 2
+				{
+					updown = 1;
+				}
 				else
 				{
 					updown = 2;
@@ -515,14 +530,16 @@ int main()
 			Sleep(300);
 			printf("Game Over\n");
 			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n", score);
+			printf("quit: 'esc'");
 			while (1)
 			{
-				char b = 0;
-				b = _getch();
-				if (b == 'r' || b == 'R') // retry
+				if (GetAsyncKeyState(0x52) & 0x8000) // 점프조건 
 				{
-					system("cls");
-					break;
+					updown = 1;
+				}
+				else if(GetAsyncKeyState(0x1B) & 0x8000) // esc 누르면 게임 끝 
+				{
+					return 0;
 				}
 			}
 			Sleep(200);
