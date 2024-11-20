@@ -102,9 +102,9 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 		height++; // 높이 올라감
 		for (i = 0; i < 4; i++)
 		{
-			player[i].y--;
+			player[i].y--; // 플레이어 y좌표 바꾸기
 		}
-		if (updown == 3 && height >= 4) // 최고 높이 도달 
+		if (updown == 3 && height >= 4) // 최고 높이 도달 (작은 점프)
 		{
 			updown++;
 		}
@@ -115,14 +115,14 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 	}
 	if (updown == 2 || updown == 4) // 내려갈때 (짝수) 
 	{
-		height--;
+		height--; // 높이 내려감 
 		for (i = 0; i < 4; i++)
 		{
-			player[i].y++;
+			player[i].y++; // 플레이어 y좌표 바꾸기 
 		}
-		if (height == 0)
+		if (height == 0) // 바닥까지 떨어졌을때 
 		{
-			updown = 0;
+			updown = 0; // 점프 신호 초기화 
 		}
 	}
 }
@@ -395,14 +395,7 @@ int main()
 					}
 					printf("\n");
 				}
-				gotoxy(player[0].x, player[0].y);
-				printf("@");
 				gameover = enemytouchcheck(); // 장애물에 부딪혔는지 체크 
-				for (i = 0; i < 4; i++) // 플레이어 출력
-				{
-					gotoxy(player[i].x, player[i].y);
-					printf("@");
-				}
 				health_and_score();
 				if (gameover == 1) // 게임오버면 while문 나가기 
 				{
@@ -512,8 +505,6 @@ int main()
 					}
 					printf("\n");
 				}
-				gotoxy(player[0].x, player[0].y);
-				printf("@");
 				gameover = waveenemytouchcheck(); // 장애물에 부딪혔는지 체크
 				health_and_score();
 				if (gameover == 1) // 게임오버면 while문 나가기 
