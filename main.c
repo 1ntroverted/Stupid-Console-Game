@@ -97,16 +97,9 @@ void gotoxy(int x, int y)
 
 void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가는 함수 
 {
-	for (i = 0; i < 2; i++)
+	if (updown == 1 || updown == 3) // 올라갈때 (홀수)
 	{
-		for (j = 0; j < 4; j++)
-		{
-			mainarr[7 - height + i][1 + j] = 0;
-		}
-	}
-	if (updown == 1 || updown == 3) // 올라갈때 
-	{
-		height++;
+		height++; // 높이 올라감
 		for (i = 0; i < 4; i++)
 		{
 			player[i].y--;
@@ -288,8 +281,6 @@ void health_and_score()
 		printf("Jump Key : hold 'w' or space bar to go up");
 		gotoxy(5, 24);
 		printf("\033[33mif you can't go up, check if caps lock is on.\033[0m");
-		gotoxy(5, 25);
-		printf("\033[31mThe game gets much faster after score reaches 10000.\033[0m");
 	}
 }
 
@@ -431,7 +422,7 @@ int main()
 			printf("quit: 'esc'");
 			while (1)
 			{
-				if (GetAsyncKeyState(0x52) & 0x8000) 
+				if (GetAsyncKeyState(0x52) & 0x8000)
 				{
 					system("cls");
 					break;
@@ -530,15 +521,11 @@ int main()
 					break;
 				}
 				score += 2; // 점수 올리기 
-				if (score <= 10000) // 점수 낮을때만 속도 내리기
-				{
-					Sleep(10);
-				}
 			}
 			system("cls");
 			Sleep(300);
 			printf("Game Over\n");
-			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n\n", score);
+			printf("your score : \033[96m%d\033[0m\n\nretry: 'r'\n", score);
 			printf("quit: 'esc'");
 			while (1)
 			{
