@@ -162,7 +162,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 {
 	height = 0; // 높이값 
 	updown = 1; // 점프 여부 
-	waitforstruct = 0;
+	waitforstruct = 0; 
 	score = 0;
 	health = 3;
 
@@ -309,7 +309,7 @@ int main()
 		if (input == 1) // 점핑모드 
 		{
 			system("cls");
-			// 게임 시작할때 정수 초기화 
+			// 플레이어 좌표 기본 설정 
 			for (i = 0; i < 2; i++)
 			{
 				player[i].x = 7;
@@ -320,8 +320,8 @@ int main()
 				player[i + 2].x = 8;
 				player[i + 2].y = 19 + i;
 			}
-			int gameover = 0;
-			settingthegame();
+			int gameover = 0; 
+			settingthegame(); // 이차원 배열, 정수를 기본 설정으로 설정하기 
 			while (1)
 			{
 				if ((GetAsyncKeyState(0x57) & 0x8000) && height == 0) // 점프조건 
@@ -332,7 +332,7 @@ int main()
 				{
 					updown = 3;
 				}
-				if (updown != 0)
+				if (updown != 0) 
 				{
 					jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 				}
