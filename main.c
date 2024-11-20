@@ -306,7 +306,7 @@ int main()
 				break;
 			}
 		}
-		if (input == 1) // 점핑모드 
+		if (input == 1) // 러너 모드 
 		{
 			system("cls");
 			// 플레이어 좌표 기본 설정 
@@ -431,11 +431,11 @@ int main()
 		if (input == 2) // 웨이브 모드 
 		{
 			system("cls");
-			// 게임 시작할때 정수 초기화 
+			// 플레이어 좌표 기본 설정
 			player[0].x = 8;
 			player[0].y = 20;
 			int gameover = 0;
-			settingthegame();
+			settingthegame(); // 이차원 배열, 정수를 기본 설정으로 설정하기
 			while (1)
 			{
 				if (GetAsyncKeyState(0x57) & 0x8000) // 점프조건 
