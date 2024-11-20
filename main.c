@@ -353,7 +353,7 @@ int main()
 				{
 					mainarr[j][0] = 0; // 플레이어를 지난 오브젝트는 삭제됨
 				}
-				for (i = 0; i < 10; i++) // mainarr 출력 
+				for (i = 0; i < 10; i++) // 이차원 배열(스크린) 출력 
 				{
 					for (j = 0; j < 120; j++)
 					{
@@ -361,14 +361,14 @@ int main()
 						gotoxy(j + 5, i + 12);
 						for (k = 0; k < 4; k++)
 						{
-							if (j + 5 == player[k].x && i + 12 == player[k].y) // mainarr랑 함께 플레이어 출력 
+							if (j + 5 == player[k].x && i + 12 == player[k].y) // 이차원 배열이랑 함께 플레이어 출력 
 							{
 								printf("@");
 								skip = 1;
 								break;
 							}
 						}
-						if (skip == 1) // 플레이어 칸은 mainarr 출력 스킵 
+						if (skip == 1) // 플레이어 칸은 이미 출력했으니 다음 칸으로 가기 
 						{
 							continue;
 						}
@@ -479,12 +479,12 @@ int main()
 					gotoxy(i + 5, 11);
 					printf("_");
 				}
-				for (i = 0; i < 10; i++) // mainarr 출력 
+				for (i = 0; i < 10; i++) // 이차원 배열(스크린) 출력 
 				{
 					for (j = 0; j < 120; j++)
 					{
 						gotoxy(j + 5, i + 12);
-						if (j + 5 == player[0].x && i + 12 == player[0].y) // mainarr랑 함께 플레이어 출력 
+						if (j + 5 == player[0].x && i + 12 == player[0].y) // 이차원 배열이랑 함께 플레이어 출력 
 						{
 							printf("@");
 							continue;
