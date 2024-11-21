@@ -105,13 +105,9 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 			player[i].y--; // 플레이어 y좌표 바꾸기
 		}
 		if (updown == 3 && height >= 4) // 최고 높이 도달 (작은 점프)
-		{
 			updown++;
-		}
 		if (height >= 7) // 최고 높이 도달 
-		{
 			updown++;
-		}
 	}
 	if (updown == 2 || updown == 4) // 내려갈때 (짝수) 
 	{
@@ -121,25 +117,23 @@ void jump() // 점프 신호에 맞춰서 캐릭터가 올라가거나 내려가
 			player[i].y++; // 플레이어 y좌표 바꾸기 
 		}
 		if (height == 0) // 바닥까지 떨어졌을때 
-		{
 			updown = 0; // 점프 신호 초기화 
-		}
 	}
 }
 
 void wave() // jump 함수 웨이브 모드 버전 
 {
-	if (updown == 1)
+	if (updown == 1) // 올라갈때
 	{
-		if (height < 8)
+		if (height < 8) // 천장에 닿으면 안 올라가도록 높이제한 걸기
 		{
 			player[0].y--;
 			height++;
 		}
 	}
-	if (updown == 2)
+	if (updown == 2) // 내려갈때
 	{
-		if (height > 0)
+		if (height > 0) // 바닥에 닿으면 더 내려가지 않게 설정
 		{
 			player[0].y++;
 			height--;
@@ -162,7 +156,7 @@ void settingthegame() // 게임 세팅하는거 (변수 초기화, 이차원 배
 {
 	height = 0; // 높이값 
 	updown = 1; // 점프 여부 
-	waitforstruct = 0; 
+	waitforstruct = 0;
 	score = 0;
 	health = 3;
 
@@ -320,7 +314,7 @@ int main()
 				player[i + 2].x = 8;
 				player[i + 2].y = 19 + i;
 			}
-			int gameover = 0; 
+			int gameover = 0;
 			settingthegame(); // 이차원 배열, 정수를 기본 설정으로 설정하기 
 			while (1)
 			{
@@ -332,7 +326,7 @@ int main()
 				{
 					updown = 3;
 				}
-				if (updown != 0) 
+				if (updown != 0)
 				{
 					jump(); // 점프 신호에 맞춰서 캐릭터 위치 조정 
 				}
@@ -532,7 +526,6 @@ int main()
 			}
 			Sleep(200);
 		}
-
 		else // 잘못 골랐을때 
 		{
 			printf("choose 1 or 2");
